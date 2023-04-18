@@ -67,7 +67,20 @@
             <ComboBox x:Name="cbPlans" Grid.Column="1" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Plans_SelectionChanged"/>
             <ComboBox x:Name="cbDates" Grid.Column="2" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Dates_SelectionChanged"/>
             <Button x:Name="btnExport" Grid.Column="3" Grid.Row="1" Content="Export" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" IsEnabled="False" Click="BtnExport_Click"/>
-            <WpfPlot x:Name="chart" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="10" MouseMove="Chart_MouseMove" MouseLeave="Chart_MouseLeave"/>
+            <WpfPlot x:Name="chart" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="10" MouseMove="Chart_MouseMove" MouseLeave="Chart_MouseLeave">
+                <WpfPlot.ContextMenu>
+                    <ContextMenu Name="cm" StaysOpen="true">
+                        <MenuItem Header="Export">
+                            <MenuItem Header="as CSV"/>
+                            <MenuItem Header="as XLSX"/>
+                            <MenuItem Header="as XLSX (All dates)"/>
+                            <MenuItem Header="as PNG"/>
+                            <MenuItem Header="as JPG"/>
+                        </MenuItem>
+                        <MenuItem Header="Open as new window"/>
+                    </ContextMenu>
+                </WpfPlot.ContextMenu>
+            </WpfPlot>
         </Grid>
     </DockPanel>
 </Window>

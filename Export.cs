@@ -6,6 +6,12 @@ using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using ZapMVImager.Objects;
 
 namespace ZapMVImager
@@ -135,23 +141,9 @@ namespace ZapMVImager
             }
         }
 
-        public static void ExportChart(string filename, WpfPlot chart, string planName, string date)
+        public static void ExportChart(string filename, Plot plot, string planName, string date)
         {
-            var fontName = "Arial";
-            var oldWidth = chart.Plot.Width;
-            var oldHeight = chart.Plot.Height;
-            var oldAxisFontName = chart.Plot.LeftAxis.AxisLabel.Font.Name;
-            var oldAxisFontSize = chart.Plot.LeftAxis.AxisLabel.Font.Size;
-
-            chart.Plot.Resize(1920, 1080);
-            chart.Plot.LeftAxis.AxisLabel.Font.Name = fontName;
-            chart.Plot.LeftAxis.AxisLabel.Font.Size = 24;
-            chart.Plot.BottomAxis.AxisLabel.Font.Name = fontName;
-            chart.Plot.BottomAxis.AxisLabel.Font.Size = 24;
-            chart.Plot.Layout(left: 80, right: 50, bottom: 70, top: 80);
-            chart.Plot.Title($"Comparison of delivered to by MV detected dose for plan \'{planName}\' at {date}", size: 32, fontName: fontName);
-
-            var bitmap = chart.Plot.Render();
+            var bitmap = CreateBitmap(plot, planName, date);
 
             if (Path.GetExtension(filename).ToUpper() == ".JPG")
             {
@@ -161,14 +153,18 @@ namespace ZapMVImager
             {
                 Export.ExportPNGData(filename, bitmap);
             }
+        }
 
-            chart.Plot.Title(string.Empty);
-            chart.Plot.LeftAxis.AxisLabel.Font.Name = oldAxisFontName;
-            chart.Plot.LeftAxis.AxisLabel.Font.Size = oldAxisFontSize;
-            chart.Plot.BottomAxis.AxisLabel.Font.Name = oldAxisFontName;
-            chart.Plot.BottomAxis.AxisLabel.Font.Size = oldAxisFontSize;
-            chart.Plot.Resize(oldWidth, oldHeight);
-            chart.Plot.ResetLayout();
+        public static void ExportClipboard(Plot plot, string planName, string date)
+        {
+            var bitmap = CreateBitmap(plot, planName, date);
+
+            Thread thread = new Thread(() =>
+            {
+                System.Windows.Clipboard.SetImage(CreateBitmapSourceFromBitmap(bitmap));
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
 
         public static void ExportPNGData(string filename, Bitmap bitmap)
@@ -179,6 +175,79 @@ namespace ZapMVImager
         public static void ExportJPGData(string filename, Bitmap bitmap)
         {
             bitmap.Save(filename, ImageFormat.Jpeg);
+        }
+
+        private static Bitmap CreateBitmap(Plot plot, string planName, string date)
+        {
+            PreparePlot(plot, planName, date);
+
+            return plot.Render();
+        }
+
+        public static void PreparePlot(Plot plot, string planName, string date, double factor = 1.0)
+        {
+            var fontName = "Arial";
+
+            plot.Resize(1920, 1080);
+            plot.LeftAxis.AxisLabel.Font.Name = fontName;
+            plot.LeftAxis.AxisLabel.Font.Size = (int)(24 / factor);
+            plot.BottomAxis.AxisLabel.Font.Name = fontName;
+            plot.BottomAxis.AxisLabel.Font.Size = (int)(24 / factor);
+            plot.Layout(left: (int)(80 / factor), right: (int)(50 / factor), bottom: (int)(70 / factor), top: (int)(80 / factor));
+            plot.Title($"MV error for plan \'{planName}\' at {date}", size: (int)(32 / factor), fontName: fontName);
+        }
+
+        // Found at https://www.codeproject.com/Articles/104929/Bitmap-to-BitmapSource
+        private static BitmapSource CreateBitmapSourceFromBitmap(Bitmap bitmap)
+        {
+            if (bitmap == null)
+                throw new ArgumentNullException("bitmap");
+
+            if (Application.Current.Dispatcher == null)
+                return null; // Is it possible?
+
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    // You need to specify the image format to fill the stream. 
+                    // I'm assuming it is PNG
+                    bitmap.Save(memoryStream, ImageFormat.Png);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    // Make sure to create the bitmap in the UI thread
+                    if (InvokeRequired)
+                        return (BitmapSource)Application.Current.Dispatcher.Invoke(
+                            new Func<Stream, BitmapSource>(CreateBitmapSourceFromBitmap),
+                            DispatcherPriority.Normal,
+                            memoryStream);
+
+                    return CreateBitmapSourceFromBitmap(memoryStream);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static bool InvokeRequired
+        {
+            get { return Dispatcher.CurrentDispatcher != Application.Current.Dispatcher; }
+        }
+
+        private static BitmapSource CreateBitmapSourceFromBitmap(Stream stream)
+        {
+            BitmapDecoder bitmapDecoder = BitmapDecoder.Create(
+                stream,
+                BitmapCreateOptions.PreservePixelFormat,
+                BitmapCacheOption.OnLoad);
+
+            // This will disconnect the stream from the image completely...
+            WriteableBitmap writable = new WriteableBitmap(bitmapDecoder.Frames.Single());
+            writable.Freeze();
+
+            return writable;
         }
     }
 }

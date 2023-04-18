@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Win32;
 using ScottPlot;
 using ScottPlot.Plottable;
 using System;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using ZapMVImager.Helpers;
 using ZapMVImager.Objects;
@@ -50,8 +52,54 @@ namespace ZapMVImager
         private void Init(object sender, RoutedEventArgs e)
         {
             InitChart();
+            InitContextMenu();
 
             Loaded -= Init;
+        }
+
+        private void InitContextMenu()
+        {
+            // unsubscribe from the default right-click menu event
+            chart.RightClicked -= chart.DefaultRightClickEvent;
+
+            // add a custom right-click action
+            chart.RightClicked += DeployCustomMenu;
+        }
+
+        private void DeployCustomMenu(object sender, EventArgs e)
+        {
+            MenuItem miCopy = new MenuItem() { Header = "Copy" };
+            miCopy.Click += CopyToClipboard;
+
+            MenuItem miReopen = new MenuItem() { Header = "Open in new window" };
+            miReopen.Click += OpenNewWindow;
+
+            ContextMenu rightClickMenu = new ContextMenu();
+            rightClickMenu.Items.Add(miCopy);
+            rightClickMenu.Items.Add(new Separator());
+            rightClickMenu.Items.Add(miReopen);
+
+            rightClickMenu.IsOpen = true;
+        }
+
+        private void OpenNewWindow(object sender, RoutedEventArgs e)
+        {
+            var newWin = new WpfPlotViewer(chart.Plot.Copy());
+
+            newWin.Title = string.Empty;
+            newWin.Width = 1024;
+            newWin.Height = 768;
+
+            newWin.wpfPlot1?.ContextMenu?.Items?.Clear();
+
+            Export.PreparePlot(newWin.wpfPlot1.Plot, (string)cbPlans.SelectedItem, (string) cbDates.SelectedItem, 1.5);
+            
+            newWin.Show();
+        }
+
+        private void CopyToClipboard(object sender, RoutedEventArgs e)
+        {
+            Export.ExportClipboard(chart.Plot, (string)cbPlans.SelectedItem, (string)cbDates.SelectedItem);
         }
 
         private void UpdateFileProgress(int fileNumber, int maxFileNumber, string filename)
@@ -271,7 +319,7 @@ namespace ZapMVImager
                 }
                 else if (Path.GetExtension(filename).ToUpper() == ".PNG" || Path.GetExtension(filename).ToUpper() == ".JPG")
                 {
-                    Export.ExportChart(filename, chart, (string)cbPlans.SelectedItem, (string)cbDates.SelectedItem);
+                    Export.ExportChart(filename, chart.Plot.Copy(), (string)cbPlans.SelectedItem, (string)cbDates.SelectedItem);
                 }
             }
             finally

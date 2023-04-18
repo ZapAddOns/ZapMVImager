@@ -1,1 +1,90 @@
 # ZapMVImager
+
+## Description
+Tool to extract MV imager data from log files and show them 
+on a chart or export them to different types of files.
+
+## How to use
+
+### Add logs
+With the two buttons “Add file(s)” and “Add folder(s)” you select 
+the log files. If you use “Add file(s)” you could import one or 
+more log text files. If you change the filter for the extension 
+(lower right side), it is also possible to add zip files. 
+Normally you should find them on the Service drive of your TPS 
+as backup files from the TDS (normally named as OP_DP1007_2023-04-14_143610.zip). 
+They contain the log files from the TDS for the given day in a 
+subfolder. All TreatmentView log files in a zip file are added. 
+With the “Add folder” you could import one or more folders. All 
+TreatmentView log files that are found recursively in this folders 
+are used. If there are zip files inside of this folders, they are 
+examined as above described.
+
+### Extract data
+If you have all the log files added, that should be used, you use 
+the button “Extract”. The app starts to go through all this log 
+files. The files are normally ordered after date and log file 
+extension (if a log file is greater than 25 MB, it is renamed to 
+log.1 and a new one is used). It checks all the lines and extracts 
+the MV imager entries. You could see the progress in the status 
+bar (number of different plans, number of entries and the file name, 
+which is checked in this moment. Takes some time dependent by the 
+number of logfiles you want to import.
+
+### Examin chart
+After this process finished, you could select the found plans in a 
+combo box. If the same plan name is found in log files from different 
+dates (fractions or makeup fractions), you could also select the date 
+you want to examine. In the lower part of the screen you see the chart 
+of the found entries. If you move the mouse around in the chart, the 
+values for this entry are shown in the status bar at the lower part. 
+There you find the date and time of this beam, isocenter and node with 
+axial and oblique positions, planned, delivered and detected MUs, 
+difference between delivered and detected MUs in percent and the cumulative 
+difference over time. Zoom with the scroll wheel of the mouse, left mouse 
+button for panning, click with middle mouse button to reset zoom and so on.
+
+#### Chart manipulation
+To get an overview what could be done with the chart, right click into 
+the chart and select "Help".
+
+#### Entry details
+When you move with the mouse cusror inside of the chart, you get a 
+cursor in the chart. With this, you could select, which entry do you 
+want to examine. The values then are shown in the statusbar. From left to 
+right you find:
+1. Date and time when the measurement was done
+2. Isocenter and node with axial and oblique position of beam. Cave: The node 
+must not be the same as the beam number. So it could be, that you start with 
+the beam #1 at node #0. 
+3. Planned MU as given by the plan
+4. Delivered MU, which could slightly differ from the planned MU
+5. Imager MU as it is detekted by the MV imager
+6. Difference between delivered MUs and MV imager MUs in percent
+7. Difference of sum of delivered MUs and MV imager MUs up to this beam in percent
+
+### Export
+At the end it is possible with the “Export” button to export the data in 
+different formats. 
+
+#### CSV - Comma separated values
+Export the data belonging to the selected plan and date to a text file, 
+each entry of chart in an extra line with a leading header. By default a 
+semicolon is used as separator between the columns. Another character 
+could be choosen in the config file. The entry is called "CSVSeparator".
+
+#### XLSX - Excel OpenXML format
+Export data belonging to the selected plan and date or for all dates into 
+a XLSX file in OpenXML format, which then could be used with MS Excel or 
+OpenOffice Calc. To distingush between this two you use the filter in the 
+combo box below the text field, where you could input the filename, which 
+you want to use for saving the data.
+
+If you decide to get data for all dates, you get a XLSX file, which contain 
+a worksheet for each date. Perhaps you have to change the name to for saving.
+
+#### PNG or JPG - Graphics formats
+Export the chart as you see it on the screen. Only difference is, that the 
+chart gets a title containing plan name and date. There are two possible 
+formats: PNG and JPG. App distinguish between them by the extension of the 
+name.
