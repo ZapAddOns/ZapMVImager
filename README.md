@@ -45,8 +45,19 @@ difference over time. Zoom with the scroll wheel of the mouse, left mouse
 button for panning, click with middle mouse button to reset zoom and so on.
 
 #### Chart manipulation
-To get an overview what could be done with the chart, right click into 
-the chart and select "Help".
+Folowing mouse operations are supported.
+**Left click drag**: Pan
+**Right click drag**: Zoom
+**Middle click drag**: Zoom region
+**Alt left click drag**: Zoom region
+**Scroll wheel**: Zoom to cursor
+**Right click**: Show context menu
+**Middle click**: Automatically adapt zoom to view whole data
+**Ctrl left click drag**: Pan horizontally
+**Shift left click drag**: Pan vertically
+**Ctrl right click drag**: Zoom horizontally
+**Shift right click drag**: Zoom vertically
+**Ctrl shift right click drag**: Zoom evenly
 
 #### Entry details
 When you move with the mouse cusror inside of the chart, you get a 
@@ -62,6 +73,11 @@ the beam #1 at node #0.
 5. Imager MU as it is detekted by the MV imager
 6. Difference between delivered MUs and MV imager MUs in percent
 7. Difference of sum of delivered MUs and MV imager MUs up to this beam in percent
+
+#### Context menu
+With the context menu of the chart, you could do the following things:
+**Copy**: Copy the current chart to the clipboard. Title is added.
+**Open in new window**: Open a new window with the current chart as content. Title is added.
 
 ### Export
 At the end it is possible with the “Export” button to export the data in 
