@@ -45,7 +45,7 @@ difference over time. Zoom with the scroll wheel of the mouse, left mouse
 button for panning, click with middle mouse button to reset zoom and so on.
 
 #### Chart manipulation
-Folowing mouse operations are supported.  
+Following mouse operations are supported.  
 **Left click drag**: Pan  
 **Right click drag**: Zoom  
 **Middle click drag**: Zoom region  
