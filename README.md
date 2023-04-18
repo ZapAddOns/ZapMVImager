@@ -45,27 +45,27 @@ difference over time. Zoom with the scroll wheel of the mouse, left mouse
 button for panning, click with middle mouse button to reset zoom and so on.
 
 #### Chart manipulation
-Folowing mouse operations are supported.
-**Left click drag**: Pan
-**Right click drag**: Zoom
-**Middle click drag**: Zoom region
-**Alt left click drag**: Zoom region
-**Scroll wheel**: Zoom to cursor
-**Right click**: Show context menu
-**Middle click**: Automatically adapt zoom to view whole data
-**Ctrl left click drag**: Pan horizontally
-**Shift left click drag**: Pan vertically
-**Ctrl right click drag**: Zoom horizontally
-**Shift right click drag**: Zoom vertically
-**Ctrl shift right click drag**: Zoom evenly
+Folowing mouse operations are supported.  
+**Left click drag**: Pan  
+**Right click drag**: Zoom  
+**Middle click drag**: Zoom region  
+**Alt left click drag**: Zoom region  
+**Scroll wheel**: Zoom to cursor  
+**Right click**: Show context menu  
+**Middle click**: Automatically adapt zoom to view whole data  
+**Ctrl left click drag**: Pan horizontally  
+**Shift left click drag**: Pan vertically  
+**Ctrl right click drag**: Zoom horizontally  
+**Shift right click drag**: Zoom vertically  
+**Ctrl shift right click drag**: Zoom evenly  
 
 #### Entry details
 When you move with the mouse cusror inside of the chart, you get a 
 cursor in the chart. With this, you could select, which entry do you 
 want to examine. The values then are shown in the statusbar. From left to 
 right you find:
-1. Date and time when the measurement was done
-2. Isocenter and node with axial and oblique position of beam. Cave: The node 
+1. Date and time when the measurement was done  
+2. Isocenter and node with axial and oblique position of beam. Cave: The node  
 must not be the same as the beam number. So it could be, that you start with 
 the beam #1 at node #0. 
 3. Planned MU as given by the plan
@@ -75,9 +75,9 @@ the beam #1 at node #0.
 7. Difference of sum of delivered MUs and MV imager MUs up to this beam in percent
 
 #### Context menu
-With the context menu of the chart, you could do the following things:
-**Copy**: Copy the current chart to the clipboard. Title is added.
-**Open in new window**: Open a new window with the current chart as content. Title is added.
+With the context menu of the chart, you could do the following things.  
+**Copy**: Copy the current chart to the clipboard. Title is added.  
+**Open in new window**: Open a new window with the current chart as content. Title is added.  
 
 ### Export
 At the end it is possible with the “Export” button to export the data in 
