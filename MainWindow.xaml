@@ -1,0 +1,73 @@
+﻿<Window x:Class="ZapMVImager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZapMVImager"
+        mc:Ignorable="d"
+        Title="ZapMVImager" Height="600" Width="800" MinWidth="640" MinHeight="480" WindowState="Maximized" FontSize="16">
+    <DockPanel LastChildFill="True">
+        <StatusBar DockPanel.Dock="Bottom" Height="30" VerticalAlignment="Bottom" FontSize="16">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <TextBlock Name="lblPlans" Text="Plans: 0" Margin="5,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2">
+                <TextBlock Name="lblEntries" Text="Entries: 0" Margin="5,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4">
+                <TextBlock Name="lblDetails" Margin="5,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="6">
+                <ProgressBar Name="barProgress" Value="0" Width="82"  Height="16" Margin="5,0" />
+            </StatusBarItem>
+        </StatusBar>
+        <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="130"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="lblFolderOrFile" Grid.Column="0" Grid.Row="0" Content="File" Width="40" Margin="10" VerticalAlignment="Top" />
+            <ListBox x:Name="lbFileOrFolder" Grid.Column="1" Grid.Row="0" Margin="10" VerticalAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Filename}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="btnFile" Grid.Column="2" Grid.Row="0" Content="Add File(s)" Width="120" Height="30" Margin="10" VerticalAlignment="Top" Click="BtnFile_Click"/>
+            <Button x:Name="btnFolder" Grid.Column="3" Grid.Row="0" Content="Add Folder(s)" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" Click="BtnFolder_Click"/>
+            <Button x:Name="btnClear" Grid.Column="3" Grid.Row="0" Content="Clear" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Center" Click="BtnClear_Click"/>
+            <Button x:Name="btnExtract" Grid.Column="3" Grid.Row="0" Content="Extract" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Bottom" IsEnabled="False" Click="BtnExtract_Click"/>
+            <Label Content="Plans" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="10"/>
+            <ComboBox x:Name="cbPlans" Grid.Column="1" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Plans_SelectionChanged"/>
+            <ComboBox x:Name="cbDates" Grid.Column="2" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Dates_SelectionChanged"/>
+            <Button x:Name="btnExport" Grid.Column="3" Grid.Row="1" Content="Export" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" IsEnabled="False" Click="BtnExport_Click"/>
+            <WpfPlot x:Name="chart" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="10" MouseMove="Chart_MouseMove" MouseLeave="Chart_MouseLeave"/>
+        </Grid>
+    </DockPanel>
+</Window>
