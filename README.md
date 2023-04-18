@@ -4,6 +4,26 @@
 Tool to extract MV imager data from log files and show them 
 on a chart or export them to different types of files.
 
+## Installation
+To get the EXE files for the app, you have to compile them. For 
+this you need the .Net SDK 6 or 7 and the .Net Framework 4.7.2.
+You get both in the internet. Search with Google for them. They 
+are free. Download first the .Net 6/7 SDK and install it. Then 
+download the .Net Framework 4.7.2. Install it too. Test it by 
+opening a Powershell and run "dotnet build". You should see the
+version of the installed .Net SDK.
+
+On this webpage go in the right upper part. There is a green button 
+"<> Code". Open it and select "Download ZIP". You will download 
+the source code as a Zip file. Open it and copy the content at 
+a place you remember.
+
+Open a Powershell, go to the folder where you stored the content
+of the Zip file and call the command "dotnet build". The compiler 
+takes some time. When it is ready, you can go to the folder 
+"bin\Debug\net472". There you will find the app "ZapMVImager.exe".
+Start it.
+
 ## How to use
 
 ### Add logs
