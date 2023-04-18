@@ -59,14 +59,14 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button x:Name="btnFile" Grid.Column="2" Grid.Row="0" Content="Add File(s)" Width="120" Height="30" Margin="10" VerticalAlignment="Top" Click="BtnFile_Click"/>
-            <Button x:Name="btnFolder" Grid.Column="3" Grid.Row="0" Content="Add Folder(s)" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" Click="BtnFolder_Click"/>
-            <Button x:Name="btnClear" Grid.Column="3" Grid.Row="0" Content="Clear" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Center" Click="BtnClear_Click"/>
-            <Button x:Name="btnExtract" Grid.Column="3" Grid.Row="0" Content="Extract" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Bottom" IsEnabled="False" Click="BtnExtract_Click"/>
+            <Button x:Name="btnFile" Grid.Column="2" Grid.Row="0" Content="Add File(s)" Width="120" Height="30" Margin="10" VerticalAlignment="Top" VerticalContentAlignment="Center" Click="BtnFile_Click"/>
+            <Button x:Name="btnFolder" Grid.Column="3" Grid.Row="0" Content="Add Folder(s)" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" VerticalContentAlignment="Center" Click="BtnFolder_Click"/>
+            <Button x:Name="btnClear" Grid.Column="3" Grid.Row="0" Content="Clear" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="BtnClear_Click"/>
+            <Button x:Name="btnExtract" Grid.Column="3" Grid.Row="0" Content="Extract" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Bottom" VerticalContentAlignment="Center" IsEnabled="False" Click="BtnExtract_Click"/>
             <Label Content="Plans" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="10"/>
             <ComboBox x:Name="cbPlans" Grid.Column="1" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Plans_SelectionChanged"/>
             <ComboBox x:Name="cbDates" Grid.Column="2" Grid.Row="1" Margin="10" VerticalContentAlignment="Center" SelectionChanged="Dates_SelectionChanged"/>
-            <Button x:Name="btnExport" Grid.Column="3" Grid.Row="1" Content="Export" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" IsEnabled="False" Click="BtnExport_Click"/>
+            <Button x:Name="btnExport" Grid.Column="3" Grid.Row="1" Content="Export" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" VerticalContentAlignment="Center" IsEnabled="False" Click="BtnExport_Click"/>
             <WpfPlot x:Name="chart" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="10" MouseMove="Chart_MouseMove" MouseLeave="Chart_MouseLeave">
                 <WpfPlot.ContextMenu>
                     <ContextMenu Name="cm" StaysOpen="true">
