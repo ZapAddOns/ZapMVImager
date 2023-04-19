@@ -138,7 +138,12 @@ namespace ZapMVImager
 
             openFileDialog.Multiselect = true;
             openFileDialog.Filter = "Log files (*.log)|*.log|Zip files (*.zip)|*.zip|All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = AppSettings.Get("FilePath", Directory.GetCurrentDirectory());
+            var initialDirectory = AppSettings.Get("FilePath", Directory.GetCurrentDirectory());
+            if (!Directory.Exists(initialDirectory))
+            {
+                initialDirectory = Directory.GetCurrentDirectory();
+            }
+            openFileDialog.InitialDirectory = initialDirectory;
             openFileDialog.FilterIndex = AppSettings.Get("FileFilterIndex", 1);
 
             if (openFileDialog.ShowDialog() == false)
@@ -280,7 +285,12 @@ namespace ZapMVImager
 
             saveFileDialog.FileName = $"MV Data - {cbPlans.SelectedItem} - {cbDates.SelectedItem}";
             saveFileDialog.Filter = "CSV file (*.csv)|*.csv|Excel file (*.xlsx)|*.xlsx|Excel file with all dates (*.xlsx)|*.xlsx|PNG file (*.png)|*.png|JPG file (*.jpg)|*.jpg|All files (*.*)|*.*";
-            saveFileDialog.InitialDirectory = AppSettings.Get("SaveFilePath", Directory.GetCurrentDirectory());
+            var initialDirectory = AppSettings.Get("SaveFilePath", Directory.GetCurrentDirectory());
+            if (!Directory.Exists(initialDirectory))
+            {
+                initialDirectory = Directory.GetCurrentDirectory();
+            }
+            saveFileDialog.InitialDirectory = initialDirectory;
             saveFileDialog.FilterIndex = AppSettings.Get("SaveFilterIndex", 2);
 
             if (saveFileDialog.ShowDialog() == false)
