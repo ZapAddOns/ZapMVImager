@@ -18,7 +18,7 @@ namespace ZapMVImager
 {
     public static class Export
     {
-        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "CumulativePlannedMU", "CumulativeDeliveredMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "IsValid", "IsFlagged" };
+        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "CumulativeDeliveredMU", "CumulativeImagerMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "IsValid", "IsFlagged" };
 
         /// <summary>
         /// Save founded entries of one or more log files to a CSV file
