@@ -18,7 +18,7 @@ namespace ZapMVImager
 {
     public static class Export
     {
-        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "CumulativePlannedMU", "CumulativeDeliveredMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "IsValid", "IsFlagged" };
+        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "IsInside10Percent", "CumulativeDeliveredMU", "CumulativeImagerMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "IsValid", "IsFlagged" };
 
         /// <summary>
         /// Save founded entries of one or more log files to a CSV file
@@ -59,6 +59,7 @@ namespace ZapMVImager
                     line.Add(entry.ImagerMU.ToString("0.000"));
                     line.Add(entry.DifferenceMU.ToString("0.000"));
                     line.Add(entry.DifferencePercent.ToString("0.000"));
+                    line.Add((Math.Abs(entry.DifferencePercent) < 10.0).ToString());
                     line.Add(entry.CumulativeDeliveredMU.ToString("0.000"));
                     line.Add(entry.CumulativeImagerMU.ToString("0.000"));
                     line.Add(entry.CumulativeDifferenceMU.ToString("0.000"));
@@ -124,6 +125,7 @@ namespace ZapMVImager
                         sl.SetCellValue(row, col++, entry.ImagerMU);
                         sl.SetCellValue(row, col++, entry.DifferenceMU);
                         sl.SetCellValue(row, col++, entry.DifferencePercent);
+                        sl.SetCellValue(row, col++, (Math.Abs(entry.DifferencePercent) < 10.0).ToString());
                         sl.SetCellValue(row, col++, entry.CumulativeDeliveredMU);
                         sl.SetCellValue(row, col++, entry.CumulativeImagerMU);
                         sl.SetCellValue(row, col++, entry.CumulativeDifferenceMU);
