@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using ScottPlot;
 using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace ZapMVImager
 {
     public static class Export
     {
-        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "CumulativeDeliveredMU", "CumulativeImagerMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "IsValid", "IsFlagged", "IsInside10Percent" };
+        static List<string> header = new List<string> { "Planname", "Date", "Time", "TreatmentType", "Beam", "Isocenter", "Node", "ColliSize", "Axial", "Oblique", "Intensity", "FieldsizeInMM", "PlannedMU", "DeliveredMU", "ImagerMU", "DifferenceMU", "DifferencePercent", "CumulativeDeliveredMU", "CumulativeImagerMU", "CumulativeDifferenceMU", "CumulativeDifferencePercent", "CumulativeInside10PercentDifferenceMU", "CumulativeInside10PercentDifferencePercent", "IsValid", "IsFlagged", "IsInside10Percent" };
 
         /// <summary>
         /// Save founded entries of one or more log files to a CSV file
@@ -42,6 +43,15 @@ namespace ZapMVImager
                 {
                     line.Clear();
 
+                    var cumulativeInsideDeliveredMU = 0.0;
+                    var cumulativeInsideImagerMU = 0.0;
+
+                    if (!entry.IsFlagged && Math.Abs(entry.DifferencePercent) < 10.0)
+                    {
+                        cumulativeInsideDeliveredMU += entry.DeliveredMU;
+                        cumulativeInsideImagerMU += entry.ImagerMU;
+                    }
+
                     line.Add("\"" + entry.PlanName + "\"");
                     line.Add(entry.Time.ToShortDateString());
                     line.Add(entry.Time.ToLongTimeString());
@@ -63,6 +73,8 @@ namespace ZapMVImager
                     line.Add(entry.CumulativeImagerMU.ToString("0.000"));
                     line.Add(entry.CumulativeDifferenceMU.ToString("0.000"));
                     line.Add(entry.CumulativeDifferencePercent.ToString("0.000"));
+                    line.Add((cumulativeInsideImagerMU - cumulativeInsideDeliveredMU).ToString("0.000"));
+                    line.Add((cumulativeInsideDeliveredMU == 0 ? 0 : (cumulativeInsideImagerMU - cumulativeInsideDeliveredMU) / cumulativeInsideDeliveredMU * 100.0).ToString("0.000"));
                     line.Add(entry.IsValid.ToString());
                     line.Add(entry.IsFlagged.ToString());
                     line.Add((Math.Abs(entry.DifferencePercent) < 10.0).ToString());
@@ -104,9 +116,18 @@ namespace ZapMVImager
 
                     var row = 2;
 
+                    var cumulativeInsideDeliveredMU = 0.0;
+                    var cumulativeInsideImagerMU = 0.0;
+
                     foreach (var entry in entries)
                     {
                         var col = 1;
+
+                        if (!entry.IsFlagged && Math.Abs(entry.DifferencePercent) < 10.0)
+                        {
+                            cumulativeInsideDeliveredMU += entry.DeliveredMU;
+                            cumulativeInsideImagerMU += entry.ImagerMU;
+                        }
 
                         sl.SetCellValue(row, col++, entry.PlanName);
                         sl.SetCellValue(row, col++, entry.Time.ToShortDateString());
@@ -129,6 +150,8 @@ namespace ZapMVImager
                         sl.SetCellValue(row, col++, entry.CumulativeImagerMU);
                         sl.SetCellValue(row, col++, entry.CumulativeDifferenceMU);
                         sl.SetCellValue(row, col++, entry.CumulativeDifferencePercent);
+                        sl.SetCellValue(row, col++, cumulativeInsideImagerMU - cumulativeInsideDeliveredMU);
+                        sl.SetCellValue(row, col++, cumulativeInsideDeliveredMU == 0 ? 0 : (cumulativeInsideImagerMU - cumulativeInsideDeliveredMU) / cumulativeInsideDeliveredMU * 100.0);
                         sl.SetCellValue(row, col++, entry.IsValid.ToString());
                         sl.SetCellValue(row, col++, entry.IsFlagged.ToString());
                         sl.SetCellValue(row, col++, (Math.Abs(entry.DifferencePercent) < 10.0).ToString());
