@@ -101,15 +101,12 @@
             <Button x:Name="btnExport" Grid.Column="3" Grid.Row="1" Content="Export" Width="120" Height="30" Margin="10,10,30,10" VerticalAlignment="Top" VerticalContentAlignment="Center" IsEnabled="False" Click="BtnExport_Click"/>
             <WpfPlot x:Name="chart" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="10" MouseMove="Chart_MouseMove" MouseLeave="Chart_MouseLeave">
                 <WpfPlot.ContextMenu>
-                    <ContextMenu Name="cm" StaysOpen="true">
-                        <MenuItem Header="Export">
-                            <MenuItem Header="as CSV"/>
-                            <MenuItem Header="as XLSX"/>
-                            <MenuItem Header="as XLSX (All dates)"/>
-                            <MenuItem Header="as PNG"/>
-                            <MenuItem Header="as JPG"/>
-                        </MenuItem>
-                        <MenuItem Header="Open as new window"/>
+                    <ContextMenu x:Name="cmChart" StaysOpen="true">
+                        <MenuItem Header="Copy chart" Click="CopyToClipboard"/>
+                        <Separator />
+                        <MenuItem x:Name="miShowCumulativeInside" Header="Show cumulative for inside 10 %" IsCheckable="True" IsChecked="False" Click="ShowCumulativeInside10Percent"/>
+                        <Separator />
+                        <MenuItem Header="Open as new window" Click="OpenNewWindow"/>
                     </ContextMenu>
                 </WpfPlot.ContextMenu>
             </WpfPlot>

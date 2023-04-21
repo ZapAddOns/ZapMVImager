@@ -97,6 +97,10 @@ the beam #1 at node #0.
 #### Context menu
 With the context menu of the chart, you could do the following things.  
 **Copy**: Copy the current chart to the clipboard. Title is added.  
+**Show cumulative for inside 10 %**: Add another plot, that shows the cumulative 
+dose difference in percent but only for the points, which difference is between 
+-10.0 % and 10.0. The idea behind is, that when dose is more than 10 % off, 
+there must something totally wrong. So we drop these measurements.  
 **Open in new window**: Open a new window with the current chart as content. Title is added.  
 
 ### Export
