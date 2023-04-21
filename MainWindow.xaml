@@ -17,8 +17,8 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="115" />
+                            <ColumnDefinition Width="130" />
                             <ColumnDefinition Width="200" />
                             <ColumnDefinition Width="180" />
                             <ColumnDefinition Width="180" />
