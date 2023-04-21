@@ -103,6 +103,7 @@ namespace ZapMVImager.Objects
             foreach (var plan in _logEntries.Keys)
             {
                 var isocenter = 1;
+                var lastDate = DateTime.MinValue;
                 var lastBeamNum = -1;
 
                 foreach (var entry in _logEntries[plan])
@@ -110,6 +111,12 @@ namespace ZapMVImager.Objects
                     if (entry.Node < lastBeamNum)
                     {
                         isocenter++;
+                    }
+
+                    if (entry.Time.Date != lastDate)
+                    {
+                        isocenter = 1;
+                        lastDate = entry.Time.Date;
                     }
 
                     entry.Isocenter = isocenter;

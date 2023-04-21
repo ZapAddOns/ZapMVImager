@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.Win32;
 using ScottPlot;
 using ScottPlot.Plottable;
@@ -24,6 +26,7 @@ namespace ZapMVImager
         LogEntries _logEntries;
         List<LogEntry> _activeEntries;
         ObservableCollection<LogFile> _files = new ObservableCollection<LogFile>();
+        MenuItem _miCumulativeInside;
         // Plots
         int _lastCursorPointIndex;
         VLine _cursorPoint;
@@ -37,6 +40,7 @@ namespace ZapMVImager
         ScatterPlot _plotValidBeams;
         ScatterPlot _plotFlaggedBeams;
         ScatterPlot _plotCumulative;
+        ScatterPlot _plotCumulativeInside;
         ScatterPlot _plotInsideRange;
         ScatterPlot _plotOutsideRange;
 
@@ -71,15 +75,25 @@ namespace ZapMVImager
             MenuItem miCopy = new MenuItem() { Header = "Copy" };
             miCopy.Click += CopyToClipboard;
 
+            _miCumulativeInside = new MenuItem() { Header = "Show cumulative for inside 10 %", IsCheckable = true };
+            _miCumulativeInside.Click += ShowCumulativeInside10Percent;
+
             MenuItem miReopen = new MenuItem() { Header = "Open in new window" };
             miReopen.Click += OpenNewWindow;
 
             ContextMenu rightClickMenu = new ContextMenu();
             rightClickMenu.Items.Add(miCopy);
             rightClickMenu.Items.Add(new Separator());
+            rightClickMenu.Items.Add(_miCumulativeInside);
+            rightClickMenu.Items.Add(new Separator());
             rightClickMenu.Items.Add(miReopen);
 
             rightClickMenu.IsOpen = true;
+        }
+
+        private void ShowCumulativeInside10Percent(object sender, RoutedEventArgs e)
+        {
+            UpdateChart();
         }
 
         private void OpenNewWindow(object sender, RoutedEventArgs e)
@@ -403,7 +417,15 @@ namespace ZapMVImager
             var entry = _activeEntries[pointIndex];
 
             // Update the GUI to describe the cursor point
-            lblDetails.Text = $"Time: {entry.Time}\t\tIsocenter-Node: {entry.Isocenter}-{entry.Node} (A:{(int)(entry.Axial/6)*6}/O:{(int)(entry.Oblique/6)*6})       \tPlanned [MU]: {entry.PlannedMU:0.0}  \tDelivered MU: {entry.DeliveredMU:0.0}  \tImager MU: {entry.ImagerMU:0.0}\t\tDifference [%]: {entry.DifferencePercent:0.0}  \tCumulative Difference [%]: {entry.CumulativeDifferencePercent:0.0}";
+            lblDetails.Text = $"Time: {entry.Time}";
+            lblIsocenter.Text = $"Isocenter: #{ entry.Isocenter}";
+            lblColliSize.Text = $"Size [mm]: {entry.ColliSize}";
+            lblNode.Text = $"Node: #{entry.Node} (A:{(int)(entry.Axial / 6) * 6}|O:{(int)(entry.Oblique / 6) * 6})";
+            lblPlannedMU.Text = $"Planned [MU]: {entry.PlannedMU:0.0}";
+            lblDeliveredMU.Text = $"Delivered [MU]: {entry.DeliveredMU:0.0}";
+            lblImagerMU.Text = $"MV Imager [MU]: {entry.ImagerMU:0.0}";
+            lblDifferencePercent.Text = $"Difference [%]: {entry.DifferencePercent:0.0}";
+            lblCumulativeDifferencePercent.Text = $"Cumulative Difference [%]: {entry.CumulativeDifferencePercent:0.0}";
         }
 
         private void Plans_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -446,12 +468,14 @@ namespace ZapMVImager
             _plotAllBeams = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.Gray, label: "All Beams");
             _plotValidBeams = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledSquare, markerSize: markerSize, color: System.Drawing.Color.Black, label: "Valid Beams");
             _plotFlaggedBeams = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.eks, markerSize: markerSize, color: System.Drawing.Color.Black, label: "Flagged Beams");
+            _plotCumulativeInside = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.LightGreen, label: "Cum. Inside 10 %");
             _plotCumulative = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.DarkGreen, label: "Cumulative");
             _plotInsideRange = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledCircle, markerSize: markerSize, color: System.Drawing.Color.Green, label: "Inside Threshold");
             _plotOutsideRange = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledCircle, markerSize: markerSize, color: System.Drawing.Color.Red, label: "Outside Threshold");
 
             _plotAllBeams.OnNaN = ScatterPlot.NanBehavior.Ignore;
             _plotCumulative.OnNaN = ScatterPlot.NanBehavior.Ignore;
+            _plotCumulativeInside.OnNaN = ScatterPlot.NanBehavior.Ignore;
 
             SetVisibilityOfPlots(false);
 
@@ -493,6 +517,7 @@ namespace ZapMVImager
 
             var allBeamPoints = new double[entries.Count()];
             var cumulativeBeamPoints = new double[entries.Count()];
+            var cumulativeInsideBeamPoints = new double[entries.Count()];
             var validPointsX = new List<double>();
             var validPointsY = new List<double>();
             var flaggedPointsX = new List<double>();
@@ -503,6 +528,8 @@ namespace ZapMVImager
             var insidePointsY = new List<double>();
 
             var beam = 0;
+            var cumulativeInsideDeliveredMU = 0.0;
+            var cumulativeInsideImagerMU = 0.0;
 
             foreach (var entry in entries)
             {
@@ -528,10 +555,25 @@ namespace ZapMVImager
                 if (entry.PlannedMU >= 10.0)
                 {
                     cumulativeBeamPoints[beam] = entry.CumulativeDifferencePercent;
+
+                    if (!entry.IsFlagged && Math.Abs(entry.DifferencePercent) < 10.0)
+                    {
+                        cumulativeInsideDeliveredMU += entry.DeliveredMU;
+                        cumulativeInsideImagerMU += entry.ImagerMU;
+
+                        cumulativeInsideBeamPoints[beam] = (cumulativeInsideImagerMU - cumulativeInsideDeliveredMU) / cumulativeInsideDeliveredMU * 100.0;
+                    }
+                    else 
+                    {
+                        cumulativeInsideBeamPoints[beam] = double.NaN;
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"{cumulativeBeamPoints[beam]} | {cumulativeInsideBeamPoints[beam]} | {entry.CumulativeDeliveredMU} | {cumulativeInsideDeliveredMU}");
                 }
                 else
                 {
                     cumulativeBeamPoints[beam] = double.NaN;
+                    cumulativeInsideBeamPoints[beam] = double.NaN;
                 }
 
                 if (!double.IsNaN(entry.CumulativeDifferencePercent) && entry.PlannedMU >= 10.0)
@@ -569,6 +611,9 @@ namespace ZapMVImager
             _plotCumulative.Update(beamNumber, cumulativeBeamPoints);
             _plotCumulative.IsVisible = true;
 
+            _plotCumulativeInside.Update(beamNumber, cumulativeInsideBeamPoints);
+            _plotCumulativeInside.IsVisible = _miCumulativeInside?.IsChecked ?? false;
+
             if (insidePointsX.Count > 0)
             {
                 _plotInsideRange.Update(insidePointsX.ToArray(), insidePointsY.ToArray());
@@ -601,6 +646,7 @@ namespace ZapMVImager
             _plotAllBeams.IsVisible = flag;
             _plotValidBeams.IsVisible = flag;
             _plotFlaggedBeams.IsVisible = flag;
+            _plotCumulativeInside.IsVisible = flag;
             _plotCumulative.IsVisible = flag;
             _plotInsideRange.IsVisible = flag;
             _plotOutsideRange.IsVisible = flag;
