@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Win32;
 using ScottPlot;
 using ScottPlot.Plottable;
@@ -403,7 +404,15 @@ namespace ZapMVImager
             var entry = _activeEntries[pointIndex];
 
             // Update the GUI to describe the cursor point
-            lblDetails.Text = $"Time: {entry.Time}\t\tIsocenter-Node: {entry.Isocenter}-{entry.Node} (A:{(int)(entry.Axial/6)*6}/O:{(int)(entry.Oblique/6)*6})       \tPlanned [MU]: {entry.PlannedMU:0.0}  \tDelivered MU: {entry.DeliveredMU:0.0}  \tImager MU: {entry.ImagerMU:0.0}\t\tDifference [%]: {entry.DifferencePercent:0.0}  \tCumulative Difference [%]: {entry.CumulativeDifferencePercent:0.0}";
+            lblDetails.Text = $"Time: {entry.Time}";
+            lblIsocenter.Text = $"Isocenter: #{ entry.Isocenter}";
+            lblColliSize.Text = $"Size [mm]: {entry.ColliSize}";
+            lblNode.Text = $"Node: #{entry.Node} (A:{(int)(entry.Axial / 6) * 6}|O:{(int)(entry.Oblique / 6) * 6})";
+            lblPlannedMU.Text = $"Planned [MU]: {entry.PlannedMU:0.0}";
+            lblDeliveredMU.Text = $"Delivered [MU]: {entry.DeliveredMU:0.0}";
+            lblImagerMU.Text = $"MV Imager [MU]: {entry.ImagerMU:0.0}";
+            lblDifferencePercent.Text = $"Difference [%]: {entry.DifferencePercent:0.0}";
+            lblCumulativeDifferencePercent.Text = $"Cumulative Difference [%]: {entry.CumulativeDifferencePercent:0.0}";
         }
 
         private void Plans_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

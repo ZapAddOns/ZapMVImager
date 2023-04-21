@@ -17,6 +17,14 @@
                             <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="240" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
@@ -34,8 +42,32 @@
             <StatusBarItem Grid.Column="4">
                 <TextBlock Name="lblDetails" Margin="5,0" />
             </StatusBarItem>
-            <Separator Grid.Column="5" />
+            <StatusBarItem Grid.Column="5">
+                <TextBlock Name="lblIsocenter" Margin="5,0" />
+            </StatusBarItem>
             <StatusBarItem Grid.Column="6">
+                <TextBlock Name="lblColliSize" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <TextBlock Name="lblNode" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="8">
+                <TextBlock Name="lblPlannedMU" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="9">
+                <TextBlock Name="lblDeliveredMU" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="10">
+                <TextBlock Name="lblImagerMU" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="11">
+                <TextBlock Name="lblDifferencePercent" Margin="5,0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="12">
+                <TextBlock Name="lblCumulativeDifferencePercent" Margin="5,0" />
+            </StatusBarItem>
+            <Separator Grid.Column="13" />
+            <StatusBarItem Grid.Column="14">
                 <ProgressBar Name="barProgress" Value="0" Width="82"  Height="16" Margin="5,0" />
             </StatusBarItem>
         </StatusBar>
