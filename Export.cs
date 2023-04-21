@@ -39,12 +39,12 @@ namespace ZapMVImager
             {
                 streamWriter.WriteLine(string.Join(separator, header));
 
+                var cumulativeInsideDeliveredMU = 0.0;
+                var cumulativeInsideImagerMU = 0.0;
+
                 foreach (var entry in entries)
                 {
                     line.Clear();
-
-                    var cumulativeInsideDeliveredMU = 0.0;
-                    var cumulativeInsideImagerMU = 0.0;
 
                     if (!entry.IsFlagged && Math.Abs(entry.DifferencePercent) < 10.0)
                     {
