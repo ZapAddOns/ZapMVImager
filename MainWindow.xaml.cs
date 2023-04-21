@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Vml.Office;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using ScottPlot;
 using ScottPlot.Plottable;
 using System;
@@ -11,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using ZapMVImager.Helpers;
 using ZapMVImager.Objects;
@@ -26,7 +22,6 @@ namespace ZapMVImager
         LogEntries _logEntries;
         List<LogEntry> _activeEntries;
         ObservableCollection<LogFile> _files = new ObservableCollection<LogFile>();
-        MenuItem _miCumulativeInside;
         // Plots
         int _lastCursorPointIndex;
         VLine _cursorPoint;
@@ -61,34 +56,21 @@ namespace ZapMVImager
             Loaded -= Init;
         }
 
+        #region Context menu for chart
         private void InitContextMenu()
         {
-            // unsubscribe from the default right-click menu event
+            // Unsubscribe from the default right-click menu event
             chart.RightClicked -= chart.DefaultRightClickEvent;
-
-            // add a custom right-click action
-            chart.RightClicked += DeployCustomMenu;
         }
 
         private void DeployCustomMenu(object sender, EventArgs e)
         {
-            MenuItem miCopy = new MenuItem() { Header = "Copy" };
-            miCopy.Click += CopyToClipboard;
+                cmChart.IsOpen = true;
+        }
 
-            _miCumulativeInside = new MenuItem() { Header = "Show cumulative for inside 10 %", IsCheckable = true };
-            _miCumulativeInside.Click += ShowCumulativeInside10Percent;
-
-            MenuItem miReopen = new MenuItem() { Header = "Open in new window" };
-            miReopen.Click += OpenNewWindow;
-
-            ContextMenu rightClickMenu = new ContextMenu();
-            rightClickMenu.Items.Add(miCopy);
-            rightClickMenu.Items.Add(new Separator());
-            rightClickMenu.Items.Add(_miCumulativeInside);
-            rightClickMenu.Items.Add(new Separator());
-            rightClickMenu.Items.Add(miReopen);
-
-            rightClickMenu.IsOpen = true;
+        private void CopyToClipboard(object sender, RoutedEventArgs e)
+        {
+            Export.ExportClipboard(chart.Plot, (string)cbPlans.SelectedItem, (string)cbDates.SelectedItem);
         }
 
         private void ShowCumulativeInside10Percent(object sender, RoutedEventArgs e)
@@ -111,10 +93,7 @@ namespace ZapMVImager
             newWin.Show();
         }
 
-        private void CopyToClipboard(object sender, RoutedEventArgs e)
-        {
-            Export.ExportClipboard(chart.Plot, (string)cbPlans.SelectedItem, (string)cbDates.SelectedItem);
-        }
+        #endregion
 
         private void UpdateFileProgress(int fileNumber, int maxFileNumber, string filename)
         {
@@ -468,8 +447,8 @@ namespace ZapMVImager
             _plotAllBeams = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.Gray, label: "All Beams");
             _plotValidBeams = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledSquare, markerSize: markerSize, color: System.Drawing.Color.Black, label: "Valid Beams");
             _plotFlaggedBeams = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.eks, markerSize: markerSize, color: System.Drawing.Color.Black, label: "Flagged Beams");
-            _plotCumulativeInside = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.LightGreen, label: "Cum. Inside 10 %");
-            _plotCumulative = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.DarkGreen, label: "Cumulative");
+            _plotCumulative = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.Green, label: "Cumulative");
+            _plotCumulativeInside = chart.Plot.AddScatter(empty, empty, markerSize: 0, color: System.Drawing.Color.Lime, label: "Cum. Inside 10 %");
             _plotInsideRange = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledCircle, markerSize: markerSize, color: System.Drawing.Color.Green, label: "Inside Threshold");
             _plotOutsideRange = chart.Plot.AddScatter(empty, empty, lineWidth: 0, markerShape: ScottPlot.MarkerShape.filledCircle, markerSize: markerSize, color: System.Drawing.Color.Red, label: "Outside Threshold");
 
@@ -612,7 +591,7 @@ namespace ZapMVImager
             _plotCumulative.IsVisible = true;
 
             _plotCumulativeInside.Update(beamNumber, cumulativeInsideBeamPoints);
-            _plotCumulativeInside.IsVisible = _miCumulativeInside?.IsChecked ?? false;
+            _plotCumulativeInside.IsVisible = miShowCumulativeInside.IsChecked;
 
             if (insidePointsX.Count > 0)
             {
