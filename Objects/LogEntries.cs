@@ -189,9 +189,11 @@ namespace ZapMVImager.Objects
                     result.Axial = double.Parse(match.Groups[7].Value, CultureInfo.InvariantCulture);
                     result.Oblique = double.Parse(match.Groups[8].Value, CultureInfo.InvariantCulture);
                     result.PlanName = match.Groups[9].Value;
-
+                }
+                
+                if (LogEntry.RegexGantryMoveCompleted.IsMatch(line))
+                { 
                     // Last entry in the log file for this content
-
                     return result;
                 }
 
