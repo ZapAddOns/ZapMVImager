@@ -165,7 +165,7 @@ namespace ZapMVImager.Objects
 
                     result.DeliveredMU = double.Parse(match.Groups[4].Value, CultureInfo.InvariantCulture);
                     result.ImagerMU = double.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
-                    result.IsFlagged = match.Groups[7].Value.ToUpper() == "YES" ? true : false;
+                    result.IsFlagged = match.Groups[8].Value.ToUpper() == "YES" ? true : false;
                 }
 
                 if (LogEntry.RegexCumulative.IsMatch(line))
